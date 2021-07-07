@@ -1,4 +1,3 @@
-import os
 from flask import Flask, render_template, request, redirect, url_for, session, g
 from flask_socketio import SocketIO, join_room, leave_room, emit
 
@@ -26,12 +25,10 @@ def game():
         session['room'] = room
         session['usertype'] = usertype
 
-        if usertype == 'student':
-            return render_template('game.html', username=username, room=room, category=usertype, legend = "Student", heading = "Wait for the question and submit the answer.", subtext="Enter your name or Answer a question")
-        elif usertype == 'professor':
-            return render_template('game.html', username=username, room=room, category=usertype, legend = "Professor", heading = "Submit a question.", subtext="Enter your name or Ask a question")
-        elif usertype == 'admin':
-            return render_template('game.html', username=username, room=room, category=usertype, legend = "Admin", heading = "View Professor and student conversation.", subtext="Enter your name or give hints to the student")
+        if usertype == 'player1':
+            return render_template('game.html', username=username, room=room, category=usertype, legend = "Player 1")
+        elif usertype == 'player2':
+            return render_template('game.html', username=username, room=room, category=usertype, legend = "Player 2")
         else:
             return render_template('index.html')
 
@@ -50,14 +47,14 @@ def join(message):
     room = message['room']
     join_room(room)
     usertype = session['usertype']
-    emit('status', {'msg':  usertype + " " + message['username'] + ' has entered the room.'}, room=room)
+    emit('status', {'msg': usertype + " " + message['username'] + ' has entered the room.'}, room=room)
 
 
 @socketio.on('text', namespace='/game')
 def text(message):
     room = message['room']
     usertype = session['usertype']
-    emit('message', {'msg':   usertype + " " + message['username'] + ' : ' + message['msg']}, room=room)
+    emit('message', {'msg': usertype + " " + message['username'] + ' : ' + message['msg']}, room=room)
 
 
 @application.route("/logout")
