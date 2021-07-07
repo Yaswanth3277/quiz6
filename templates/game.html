@@ -5,6 +5,30 @@
 </head>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<p id="demo"></p>
+
+<script>
+var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();
+
+var x = setInterval(function() {
+
+  var now = new Date().getTime();
+
+  var distance = countDownDate - now;
+
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById("demo").innerHTML = seconds + "s ";
+
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
 <script type="text/javascript" charset="utf-8">
     var socket;
     var category;
@@ -26,11 +50,11 @@
                suffix = data.msg.split("_")[1];
                data.msg=data.msg.split("_")[0];
 
-               if( category == "professor" && suffix == "answer")
+               if( category == "player1" && suffix == "answer")
                 {
                     data.msg = data.msg+"  "+'<input type="text" id="score" name="iscore" placeholder="score">' ;
                 }
-                else if(category == "student" && suffix == "question")
+                else if(category == "player2" && suffix == "question")
                 {
                     data.msg = data.msg+"\nScore for this question is: ";
                     console.log(data.msg);
@@ -72,7 +96,7 @@
             <legend>{{legend}}</legend>
             <label for="chat">Players room</label>
             <div id="chat" style="border-style:groove; background-color: whitesmoke; width:500px; height:200px; margin: auto;text-align:left;"></div><br />
-            <label for="text">Game area</label>
+            <label for="text">Enter stone values/</label>
             <input type="text" id="text" name="answer"><br><br>
             <button type="button" id="send">Send</button>
         </fieldset>
